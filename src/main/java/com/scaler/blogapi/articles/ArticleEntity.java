@@ -2,10 +2,14 @@ package com.scaler.blogapi.articles;
 
 import com.scaler.blogapi.commons.BaseEntity;
 import com.scaler.blogapi.users.UserEntity;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 
+@Setter
+@Getter
 @Entity(name="articles")
 public class ArticleEntity extends BaseEntity {
 

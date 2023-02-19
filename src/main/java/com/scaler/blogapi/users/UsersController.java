@@ -20,7 +20,7 @@ public class UsersController {
         this.usersService = usersService;
     }
 
-    @PostMapping(" ")
+    @PostMapping("")
     public ResponseEntity<UserResponseDTO> createUser(@RequestBody CreateUserDTO createUserDTO) {
         var savedUser = usersService.createUser(createUserDTO);
         return ResponseEntity

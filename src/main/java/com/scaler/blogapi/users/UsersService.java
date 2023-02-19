@@ -53,6 +53,11 @@ public class UsersService  {
          return null;
      }
 
+     public UserEntity getUserById(Integer userId) {
+        var userEntity = usersRepository.getById(userId);
+        return userEntity;
+     }
+
      public static class UserNotFoundException extends IllegalArgumentException {
         public UserNotFoundException(Integer id) {
             super("User with id " + id + " not found");

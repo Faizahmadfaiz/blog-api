@@ -1,5 +1,6 @@
 package com.scaler.blogapi.articles;
 
+import com.scaler.blogapi.security.jwt.JWTService;
 import com.scaler.blogapi.users.UsersRepository;
 import com.scaler.blogapi.users.UsersService;
 import com.scaler.blogapi.users.dtos.CreateUserDTO;
@@ -23,7 +24,8 @@ public class ArticlesServiceTests {
         if (usersService == null) {
             var modelMapper = new ModelMapper();
             var passwordEncoder = new BCryptPasswordEncoder();
-            usersService =  new UsersService(usersRepository, modelMapper, passwordEncoder) ;
+            var jwtService = new JWTService();
+            usersService =  new UsersService(usersRepository, modelMapper, passwordEncoder, jwtService ) ;
         }
         return usersService;
     }

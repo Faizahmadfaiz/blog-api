@@ -4,34 +4,30 @@ import com.scaler.blogapi.users.dtos.CreateUserDTO;
 import com.scaler.blogapi.users.dtos.LoginUserDTO;
 import com.scaler.blogapi.users.dtos.UserResponseDTO;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UsersService  {
      private final UsersRepository usersRepository;
      private final ModelMapper modelMapper;
+     private final PasswordEncoder passwordEncoder;
 
-    public UsersService(UsersRepository usersRepository, ModelMapper modelMapper) {
+    public UsersService(
+            @Autowired UsersRepository usersRepository,
+            @Autowired ModelMapper modelMapper,
+            @Autowired PasswordEncoder passwordEncoder) {
         this.usersRepository = usersRepository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
-//     public UserResponseDTO createUser(CreateUserDTO createUserDTO) {
-//        // TODO: Encrypt password
-//         // TODO: Validate Email
-//         // TODO: Check if username already exists
-//
-//         var newUserEntity = modelMapper.map(createUserDTO, UserEntity.class);
-//         var savedUser  = usersRepository.save(newUserEntity);
-//         var userResponseDTO = modelMapper.map(savedUser, UserResponseDTO.class);
-//         return userResponseDTO;
-//     }
-
     public UserResponseDTO createUser(CreateUserDTO createUserDTO) {
-        // TODO: Encrypt password
         // TODO: Validate email
         // TODO: Check if username already exists
         var newUserEntity = modelMapper.map(createUserDTO, UserEntity.class);
+        newUserEntity.setPassword(passwordEncoder.encode(createUserDTO.getPassword()));
         var savedUser = usersRepository.save(newUserEntity);
         var userResponseDTO = modelMapper.map(savedUser, UserResponseDTO.class);
 
@@ -40,17 +36,19 @@ public class UsersService  {
 
      public UserResponseDTO loginUser(LoginUserDTO loginUserDTO) {
         var userEntity = usersRepository.findByUsername(loginUserDTO.getUsername());
-        // TODO: Implement password matching
          if (userEntity == null) {
              throw new UserNotFoundException(loginUserDTO.getUsername());
          }
 
          // TODO: Encrypt password
-
-         if (!userEntity.getPassword().equals(loginUserDTO.getPassword())) {
-             throw new IncorrectPasswordException();
+         var passMatch = passwordEncoder.matches(loginUserDTO.getPassword(), userEntity.getPassword());
+         if (!passMatch) {
+               throw new IllegalArgumentException("Incorrect Password");
          }
-         return null;
+
+         var userResponseDTO = modelMapper.map(userEntity, UserResponseDTO.class);
+
+         return userResponseDTO;
      }
 
      public UserEntity getUserById(Integer userId) {

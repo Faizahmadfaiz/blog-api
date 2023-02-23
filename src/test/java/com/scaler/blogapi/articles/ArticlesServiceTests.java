@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -21,7 +22,8 @@ public class ArticlesServiceTests {
     private UsersService getUsersService() {
         if (usersService == null) {
             var modelMapper = new ModelMapper();
-            usersService =  new UsersService(usersRepository, modelMapper) ;
+            var passwordEncoder = new BCryptPasswordEncoder();
+            usersService =  new UsersService(usersRepository, modelMapper, passwordEncoder) ;
         }
         return usersService;
     }

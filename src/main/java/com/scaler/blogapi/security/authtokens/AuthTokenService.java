@@ -21,10 +21,10 @@ public class AuthTokenService {
         return savedAuthToken.getId();
     }
 
-    public UserEntity getUserIdFromAuthToken(UUID authToken) {
+    public Integer getUserIdFromAuthToken(UUID authToken) {
         var savedAuthToken = authTokenRepository.findById(authToken)
                 .orElseThrow(() -> new BadCredentialsException("Invalid AuthToken"));
 
-        return savedAuthToken.getUser();
+        return savedAuthToken.getUser().getId();
     }
 }

@@ -1,19 +1,22 @@
 package com.scaler.blogapi.security.jwt;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
 @Service
 public class JWTService {
+
     private Algorithm algorithm = Algorithm.HMAC256("SECRET SIGNING KEY (should be in env or config)");
+
+
     public String createJWT(Integer userId) {
         return createJWT(
                 userId,
                 new Date(),
-                new Date(System.currentTimeMillis() * 1000 * 60 * 60 * 24 * 7)
+                new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)
         );
     }
 
@@ -27,9 +30,8 @@ public class JWTService {
     }
 
     public Integer getUserIdFromJWT(String jwt) {
-        var verifier = JWT.require(algorithm).build();
-        var decodeJWT = verifier.verify(jwt);
-        var subject = decodeJWT.getSubject();
+        var decodedJWT = JWT.decode(jwt);
+        var subject = decodedJWT.getSubject();
         return Integer.parseInt(subject);
     }
 }

@@ -1,14 +1,19 @@
 package com.scaler.blogapi.users;
 
+import com.scaler.blogapi.profiles.dtos.ProfileResponseDTO;
 import com.scaler.blogapi.security.authtokens.AuthTokenService;
 import com.scaler.blogapi.security.jwt.JWTService;
 import com.scaler.blogapi.users.dtos.CreateUserDTO;
 import com.scaler.blogapi.users.dtos.LoginUserDTO;
 import com.scaler.blogapi.users.dtos.UserResponseDTO;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import org.springframework.data.domain.Pageable;
+import java.util.List;
 
 @Service
 public class UsersService  {
@@ -64,6 +69,18 @@ public class UsersService  {
      public UserEntity getUserById(Integer userId) {
         var userEntity = usersRepository.getById(userId);
         return userEntity;
+     }
+
+     public ProfileResponseDTO getUserByName(String username) {
+        var userEntity = usersRepository.findByUsername(username);
+        var profile = modelMapper.map(userEntity, ProfileResponseDTO.class);
+        return profile;
+     }
+
+     public List<ProfileResponseDTO> getUsers(Integer pageNumber, Integer pageSize) {
+        Pageable paging = PageRequest.of(pageNumber, pageSize);
+        var users = usersRepository.findAll(paging);
+        return users.stream().map(userEntity -> modelMapper.map(userEntity, ProfileResponseDTO.class)).toList();
      }
 
      public static class UserNotFoundException extends IllegalArgumentException {

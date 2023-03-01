@@ -37,7 +37,7 @@ public class UsersController {
             authType = UsersService.AuthType.AUTH_TOKEN;
         }
         var savedUser = usersService.loginUser(loginUserDTO, authType);
-        return ResponseEntity.ok (savedUser);
+        return ResponseEntity.ok(savedUser);
     }
 
 

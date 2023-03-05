@@ -1,5 +1,7 @@
 package com.scaler.blogapi.articles;
 
+import com.scaler.blogapi.articles.dtos.ArticlesResponseDTO;
+import com.scaler.blogapi.articles.dtos.CreateArticleDTO;
 import com.scaler.blogapi.users.UsersService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -17,11 +19,20 @@ public class ArticlesService {
         this.usersService = usersService;
     }
 
-    public ArticleEntity createArticle(ArticleEntity articleEntity, Integer authorId) {
+    public ArticlesResponseDTO createArticle(CreateArticleDTO createArticleDTO, Integer authorId) {
+        var newArticleEntity = modelMapper.map(createArticleDTO, ArticleEntity.class);
         var author = usersService.getUserById(authorId);
-        articleEntity.setAuthor(author);
-        var savedArticle = articlesRepository.save(articleEntity);
-        return savedArticle;
+        newArticleEntity.setAuthor(author);
+        var slug = this.getArticleSlug(newArticleEntity.getTitle());
+        newArticleEntity.setSlug(slug);
+        var savedArticle = articlesRepository.save(newArticleEntity);
+        var articleResponseDTO = modelMapper.map(savedArticle, ArticlesResponseDTO.class);
+        return articleResponseDTO;
+    }
+
+    private String getArticleSlug(String title) {
+        var splittedString = title.toLowerCase().split(" ");
+        return String.join("-", splittedString);
     }
 
     public ArticleEntity getArticleBySlug(String slug) {

@@ -1,5 +1,6 @@
 package com.scaler.blogapi.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.scaler.blogapi.articles.ArticleEntity;
 import com.scaler.blogapi.commons.BaseEntity;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity(name="users")
+@JsonIgnoreProperties({ "password", "hibernateLazyInitializer" })
 public class UserEntity extends BaseEntity {
 
     @Column(unique = true, nullable = false, length = 50)

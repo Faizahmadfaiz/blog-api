@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/articles")
@@ -22,8 +23,17 @@ public class ArticlesController {
     }
 
     @GetMapping("")
-    public String getArticles() {
-        return "Articles";
+    public ResponseEntity<List<ArticlesResponseDTO>> getArticles(
+            @RequestParam(required = false, name = "author") String author,
+            @RequestParam Integer pageNumber,
+            @RequestParam Integer pageSize
+    ) {
+        if (author != null) {
+            var articles = articlesService.getArticlesByAuthor(author, pageNumber, pageSize);
+            return ResponseEntity.ok(articles);
+        }
+        var articles = articlesService.getArticles(pageNumber, pageSize);
+        return ResponseEntity.ok(articles);
     }
 
     @GetMapping("/private")

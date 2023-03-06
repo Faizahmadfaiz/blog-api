@@ -73,6 +73,9 @@ public class UsersService  {
 
      public ProfileResponseDTO getUserByName(String username) {
         var userEntity = usersRepository.findByUsername(username);
+        if (userEntity == null) {
+            throw new UserNotFoundException(username);
+        }
         var profile = modelMapper.map(userEntity, ProfileResponseDTO.class);
         return profile;
      }

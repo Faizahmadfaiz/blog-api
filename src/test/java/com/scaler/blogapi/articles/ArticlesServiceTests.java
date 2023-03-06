@@ -37,7 +37,7 @@ public class ArticlesServiceTests {
     public ArticlesService getArticlesService() {
         if (articlesService == null) {
             var modelMapper = new ModelMapper();
-            articlesService = new ArticlesService(articlesRepository, modelMapper, getUsersService());
+            articlesService = new ArticlesService(articlesRepository, modelMapper, getUsersService(), usersRepository);
         }
         return articlesService;
     }
